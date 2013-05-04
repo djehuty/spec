@@ -1,0 +1,9 @@
+#!/bin/sh
+
+for item in `find . -name \*.rs`;
+do
+  if [ "${item:2:-3}" != "tester" ]
+  then
+    ./test ${item:2:-3}
+  fi
+done

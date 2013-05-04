@@ -1,0 +1,36 @@
+#!/bin/sh
+
+# Get module name
+modulename="${1##*/}"
+dirname="$(dirname ${1})"
+
+if [ "${1: -3}" != ".rs" ]
+then
+  filename=${1}.rs
+  target=${1}
+else
+  filename=${1}
+  target=${1:0:-3}
+fi
+
+if test "../ibis/${filename}" -nt "./.cache/${target}"
+then
+cd ../ibis
+
+# Compile
+./build ${1}
+
+# Ensure we recompile test
+touch "${filename}"
+
+cd ../spec
+fi
+
+if test "${filename}" -nt "./.cache/${target}"
+then
+rustc ${filename} -L "../ibis/.libs"
+mkdir -p ./.cache/${dirname}
+mv ${target} ./.cache/${target}
+fi
+
+./.cache/${target}
