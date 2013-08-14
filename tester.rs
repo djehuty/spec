@@ -1,10 +1,9 @@
 #[macro_escape];
 
 pub use std::uint;
-pub use std::io;
 
 pub fn report_failure(expected: ~str, actual: ~str) {
-  io::print(fmt!("\n\x1b[31;1mFail\x1b[39;0m - %s vs %s", actual, expected));
+  ::std::io::print(fmt!("\n\x1b[31;1mFail\x1b[39;0m - %s vs %s", actual, expected));
 }
 
 trait TestInput {
@@ -119,12 +118,12 @@ macro_rules! describe(
       let mut _fails:uint = 0;
       let mut _successes:uint = 0;
 
-      io::println(module_name);
+      ::std::io::println(module_name);
 
       $func;
 
       let assertions = _successes + _fails;
-      io::println(fmt!("\n%u tests %u assertions %u failures", _tests, assertions, _fails));
+      ::std::io::println(fmt!("\n%u tests %u assertions %u failures", _tests, assertions, _fails));
     }
   )
 )
@@ -135,12 +134,12 @@ macro_rules! test(
     _indent += 1;
 
     do uint::range_step(0, _indent, 1) |_| {
-      io::print("  ");
+      ::std::io::print("  ");
 
       true
     };
 
-    io::println(_current_test);
+    ::std::io::println(_current_test);
 
     $func;
 
@@ -180,22 +179,22 @@ macro_rules! should(
     _indent += 1;
 
     do uint::range_step(0, _indent, 1) |_| {
-      io::print("  ");
+      ::std::io::print("  ");
 
       true
     };
 
-    io::print("should ");
-    io::print($prompt);
+    ::std::io::print("should ");
+    ::std::io::print($prompt);
 
     $func;
 
     if (!_failure) {
-      io::print(" - ");
-      io::println("\x1b[32;1mPass\x1b[39;0m");
+      ::std::io::print(" - ");
+      ::std::io::println("\x1b[32;1mPass\x1b[39;0m");
     }
     else {
-      io::println("");
+      ::std::io::println("");
     }
 
     _indent -= 1;
