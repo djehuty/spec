@@ -1,4 +1,10 @@
 #!/bin/sh
+if [ "$1" == "" ]
+then
+  echo "Usage: test <module>"
+  echo "Example: test io/console"
+  exit 1
+fi
 
 # Get module name
 modulename="${1##*/}"
@@ -11,6 +17,12 @@ then
 else
   filename=${1}
   target=${1:0:-3}
+fi
+
+if [ ! -e "${filename}" ]
+then
+  echo "error: specification not found for ${modulename}"
+  exit 1
 fi
 
 if test "../ibis/${filename}" -nt "./.cache/${target}"

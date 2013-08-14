@@ -23,62 +23,62 @@ mod math {
 describe!("trig", {
   test!("cos", {
     should!("should work for 0.0", {
-      let result = math::trig::cos(0.0);
+      let result = math::trig::cos_f64(0.0);
       must!(result eq 1.0);
     })
 
     should!("should work for 1/2 pi", {
       let PI = 3.14159265358979323846_f64;
-      let result = math::trig::cos(PI / 2.0);
+      let result = math::trig::cos_f64(PI / 2.0);
       must!(result near 0.0);
     })
 
     should!("should work for pi", {
       let PI = 3.14159265358979323846_f64;
-      let result = math::trig::cos(PI);
+      let result = math::trig::cos_f64(PI);
       must!(result near -1.0);
     })
 
     should!("should work for 3/2 pi", {
       let PI = 3.14159265358979323846_f64;
-      let result = math::trig::cos(PI * 3.0 / 2.0);
+      let result = math::trig::cos_f64(PI * 3.0 / 2.0);
       must!(result near 0.0);
     })
 
     should!("should work for 2 pi", {
       let PI = 3.14159265358979323846_f64;
-      let result = math::trig::cos(PI * 2.0);
+      let result = math::trig::cos_f64(PI * 2.0);
       must!(result near 1.0);
     })
   })
 
   test!("sin", {
     should!("should work for 0.0", {
-      let result = math::trig::sin(0.0);
+      let result = math::trig::sin_f64(0.0);
       must!(result eq 0.0);
     })
 
     should!("should work for 1/2 pi", {
       let PI = 3.14159265358979323846_f64;
-      let result = math::trig::sin(PI / 2.0);
+      let result = math::trig::sin_f64(PI / 2.0);
       must!(result near 1.0);
     })
 
     should!("should work for pi", {
       let PI = 3.14159265358979323846_f64;
-      let result = math::trig::sin(PI);
+      let result = math::trig::sin_f64(PI);
       must!(result near 0.0);
     })
 
     should!("should work for 3/2 pi", {
       let PI = 3.14159265358979323846_f64;
-      let result = math::trig::sin(PI * 3.0 / 2.0);
+      let result = math::trig::sin_f64(PI * 3.0 / 2.0);
       must!(result near -1.0);
     })
 
     should!("should work for 2 pi", {
       let PI = 3.14159265358979323846_f64;
-      let result = math::trig::sin(PI * 2.0);
+      let result = math::trig::sin_f64(PI * 2.0);
       must!(result near 0.0);
     })
   })

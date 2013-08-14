@@ -1,5 +1,8 @@
 #[macro_escape];
 
+pub use std::uint;
+pub use std::io;
+
 pub fn report_failure(expected: ~str, actual: ~str) {
   io::print(fmt!("\n\x1b[31;1mFail\x1b[39;0m - %s vs %s", actual, expected));
 }
@@ -131,9 +134,11 @@ macro_rules! test(
     _current_test = $prompt;
     _indent += 1;
 
-    for uint::range(0, _indent) |_| {
+    do uint::range_step(0, _indent, 1) |_| {
       io::print("  ");
-    }
+
+      true
+    };
 
     io::println(_current_test);
 
@@ -174,9 +179,11 @@ macro_rules! should(
     _tests += 1;
     _indent += 1;
 
-    for uint::range(0, _indent) |_| {
+    do uint::range_step(0, _indent, 1) |_| {
       io::print("  ");
-    }
+
+      true
+    };
 
     io::print("should ");
     io::print($prompt);
