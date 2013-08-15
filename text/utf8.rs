@@ -99,25 +99,28 @@ describe!("utf8", {
     should!("should work for an ASCII string", {
       let buffer:&mut[u16] = &mut[0, 0, 0, 0, 0];
       text::utf8::toUtf16(utf8, buffer);
-      for uint::range(0, buffer.len()) |i| {
+      do uint::range_step(0, buffer.len(), 1) |i| {
         must!(buffer[i] eq utf16[i]);
-      }
+        true
+      };
     })
 
     should!("should work for a UTF8 string", {
       let buffer:&mut[u16] = &mut[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
       text::utf8::toUtf16(utf8_2, buffer);
-      for uint::range(0, buffer.len()) |i| {
+      do uint::range_step(0, buffer.len(), 1) |i| {
         must!(buffer[i] eq utf16_2[i]);
-      }
+        true
+      };
     })
 
     should!("should work with combining marks", {
       let buffer:&mut[u16] = &mut[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
       text::utf8::toUtf16(utf8_3, buffer);
-      for uint::range(0, buffer.len()) |i| {
+      do uint::range_step(0, buffer.len(), 1) |i| {
         must!(buffer[i] eq utf16_3[i]);
-      }
+        true
+      };
     })
   })
 
