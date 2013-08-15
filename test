@@ -48,3 +48,5 @@ mv ${target} ./.cache/${target}
 fi
 
 ./.cache/${target}
+
+rm -rf .tmp
