@@ -1,4 +1,5 @@
 #[macro_escape];
+#[allow(unused_mut)];
 
 pub use std::uint;
 
@@ -105,14 +106,26 @@ pub fn perform_near<T:TestInput>(a:T, b:T, tolerance:T, negate:bool) -> bool {
   }
 }
 
+pub struct Group {
+  func: ~fn(int) -> ~[uint],
+  name: &'static str
+}
+
+pub struct Test {
+  func: ~fn(int) -> ~[uint],
+  name: &'static str
+}
+
 macro_rules! describe(
   ($prompt:expr, $func:expr) => (
     fn main() {
+      #[allow(unused_mut)];
       let module_name = $prompt;
 
-      let mut _current_test = "<invalid>";
+      let mut _setup = |_:int| {};
+      let mut _teardown = |_:int| {};
 
-      let mut _indent = 0;
+      let mut _actual_tests:~[Group] = ~[];
 
       let mut _tests:uint = 0;
       let mut _fails:uint = 0;
@@ -122,6 +135,22 @@ macro_rules! describe(
 
       $func;
 
+      _setup(0);
+
+      for test in _actual_tests.iter() {
+        ::std::io::print("  ");
+        ::std::io::println(test.name);
+
+        let foo: &fn(int) -> ~[uint] = test.func;
+        let result = foo(0);
+
+        _tests += result[0];
+        _fails += result[1];
+        _successes += result[2];
+      }
+
+      _teardown(0);
+
       let assertions = _successes + _fails;
       ::std::io::println(fmt!("\n%u tests %u assertions %u failures", _tests, assertions, _fails));
     }
@@ -130,20 +159,71 @@ macro_rules! describe(
 
 macro_rules! test(
   ($prompt:expr, $func:expr) => ({
-    _current_test = $prompt;
-    _indent += 1;
+    _actual_tests.push(
+      Group { name: $prompt,
+              func: |_| -> ~[uint] {
+                let mut _tests: ~[Test] = ~[];
 
-    do uint::range_step(0, _indent, 1) |_| {
-      ::std::io::print("  ");
+                let mut _total = 0;
+                let mut _successes = 0;
+                let mut _fails = 0;
 
-      true
-    };
+                $func;
 
-    ::std::io::println(_current_test);
+                for test in _tests.iter() {
+                  ::std::io::print("    should ");
+                  ::std::io::print(test.name);
 
-    $func;
+                  let foo: &fn(int) -> ~[uint] = test.func;
+                  let result = foo(0);
 
-    _indent -= 1;
+                  _total += result[0];
+                  _fails += result[1];
+                  _successes += result[2];
+                }
+
+                ~[_total, _fails, _successes]
+              }
+            }
+    );
+  })
+)
+
+macro_rules! should(
+  ($prompt:expr, $func:expr) => ({
+    _tests.push(
+      Test { name: $prompt,
+             func: |_| -> ~[uint] {
+               let mut _failure = false;
+               let mut _successes = 0;
+               let mut _fails = 0;
+
+               $func;
+
+               if (!_failure) {
+                 ::std::io::print(" - ");
+                 ::std::io::println("\x1b[32;1mPass\x1b[39;0m");
+               }
+               else {
+                 ::std::io::println("");
+               }
+
+               ~[_successes + _fails, _fails, _successes]
+             }
+           }
+    );
+  })
+)
+
+macro_rules! setup(
+  ($func:expr) => ({
+    _setup = |_:int| $func;
+  })
+)
+
+macro_rules! teardown(
+  ($func:expr) => ({
+    _teardown = |_:int| $func;
   })
 )
 
@@ -169,34 +249,4 @@ macro_rules! wont(
   ($a:expr near $b:expr within $t:expr) => (
     if (perform_near($a, $b, $t, true)) { _successes += 1; } else { _failure = true; _fails += 1; }
   );
-)
-
-macro_rules! should(
-  ($prompt:expr, $func:expr) => ({
-    let mut _failure = false;
-
-    _tests += 1;
-    _indent += 1;
-
-    do uint::range_step(0, _indent, 1) |_| {
-      ::std::io::print("  ");
-
-      true
-    };
-
-    ::std::io::print("should ");
-    ::std::io::print($prompt);
-
-    $func;
-
-    if (!_failure) {
-      ::std::io::print(" - ");
-      ::std::io::println("\x1b[32;1mPass\x1b[39;0m");
-    }
-    else {
-      ::std::io::println("");
-    }
-
-    _indent -= 1;
-  })
 )
