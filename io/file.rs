@@ -12,9 +12,20 @@ mod io {
 }
 
 describe!("File", {
+  setup!({
+    match io::file::create(".tmp/io_file_foo", io::stream::Write) {
+      ~io::stream::Writer(f) => f.write(['a' as u8, 'b' as u8, 'c' as u8, 'd' as u8]),
+      _ => {}
+    };
+
+    match io::file::create(".tmp/io_file_bar", io::stream::Write) {
+      _ => {}
+    };
+  })
+
   test!("open", {
     should!("open the file for reading", {
-      let reader = io::file::open("foo", io::stream::Read);
+      let reader = io::file::open(".tmp/io_file_foo", io::stream::Read);
 
       let result =
         match reader {
@@ -26,7 +37,7 @@ describe!("File", {
     })
 
     should!("open the file for writing", {
-      let writer = io::file::open("bar", io::stream::Write);
+      let writer = io::file::open(".tmp/io_file_bar", io::stream::Write);
 
       let result =
         match writer {
@@ -40,7 +51,7 @@ describe!("File", {
 
   test!("read", {
     should!("read the given number of bytes", {
-      let reader = io::file::open("foo", io::stream::Read);
+      let reader = io::file::open(".tmp/io_file_foo", io::stream::Read);
 
       let result =
         match reader {
@@ -52,7 +63,7 @@ describe!("File", {
     })
 
     should!("read the given number of bytes after a seek", {
-      let reader = io::file::open("foo", io::stream::Read);
+      let reader = io::file::open(".tmp/io_file_foo", io::stream::Read);
 
       let result =
         match reader {
@@ -67,7 +78,7 @@ describe!("File", {
     })
 
     should!("read from the last position", {
-      let reader = io::file::open("foo", io::stream::Read);
+      let reader = io::file::open(".tmp/io_file_foo", io::stream::Read);
 
       let result =
         match reader {
@@ -85,7 +96,7 @@ describe!("File", {
   test!("write", {
     should!("write the given bytes", {
       {
-        let reader = io::file::open("bar", io::stream::Write);
+        let reader = io::file::open(".tmp/io_file_bar", io::stream::Write);
 
         match reader {
           ~io::stream::Writer(r) => {r.write(['x' as u8, 'z' as u8]); ~"ok"},
@@ -93,7 +104,7 @@ describe!("File", {
         };
       }
 
-      let result1 = match io::file::open("bar", io::stream::Read) {
+      let result1 = match io::file::open(".tmp/io_file_bar", io::stream::Read) {
         ~io::stream::Reader(r) => str::from_bytes(r.read(2)),
         _ => ~"nope"
       };
@@ -101,7 +112,7 @@ describe!("File", {
       must!(result1 eq ~"xz");
 
       {
-        let reader = io::file::open("bar", io::stream::Write);
+        let reader = io::file::open(".tmp/io_file_bar", io::stream::Write);
 
         match reader {
           ~io::stream::Writer(r) => {r.write(['z' as u8, 'x' as u8]); ~"ok"},
@@ -109,7 +120,7 @@ describe!("File", {
         };
       }
 
-      let result2 = match io::file::open("bar", io::stream::Read) {
+      let result2 = match io::file::open(".tmp/io_file_bar", io::stream::Read) {
         ~io::stream::Reader(r) => str::from_bytes(r.read(2)),
         _ => ~"nope"
       };
@@ -120,7 +131,7 @@ describe!("File", {
 
   test!("seek", {
     should!("seek forward", {
-      let reader = io::file::open("foo", io::stream::Read);
+      let reader = io::file::open(".tmp/io_file_foo", io::stream::Read);
 
       let result =
         match reader {
@@ -135,7 +146,7 @@ describe!("File", {
     })
 
     should!("seek backward", {
-      let reader = io::file::open("foo", io::stream::Read);
+      let reader = io::file::open(".tmp/io_file_foo", io::stream::Read);
 
       let result =
         match reader {

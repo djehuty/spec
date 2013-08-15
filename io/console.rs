@@ -19,7 +19,7 @@ fn setup() -> ~[int] {
     let dupped = ::std::libc::funcs::posix88::unistd::dup(::std::libc::consts::os::posix88::STDOUT_FILENO);
 
     let temp_out =
-      do "tmp".to_c_str().with_ref |pathbuf| {
+      do ".tmp/io_console_redirect".to_c_str().with_ref |pathbuf| {
         do "w+b".to_c_str().with_ref |modebuf| {
           ::std::libc::fopen(pathbuf, modebuf)
         }
