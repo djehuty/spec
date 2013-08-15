@@ -50,7 +50,7 @@ describe!("console", {
       teardown(fd);
 
       let result =
-        match io::file::open("tmp", io::stream::Read) {
+        match io::file::open(".tmp/io_console_redirect", io::stream::Read) {
           ~io::stream::Reader(r) => { let bytes = r.read(5); str::from_bytes([bytes[0], bytes[4]]) },
           _ => ~"bad"
         };
@@ -66,7 +66,7 @@ describe!("console", {
       teardown(fd);
 
       let result =
-        match io::file::open("tmp", io::stream::Read) {
+        match io::file::open(".tmp/io_console_redirect", io::stream::Read) {
           ~io::stream::Reader(r) => { let bytes = r.read(9); str::from_bytes([bytes[0], bytes[4], bytes[8]]) },
           _ => ~"bad"
         };
