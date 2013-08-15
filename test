@@ -38,6 +38,8 @@ touch "${filename}"
 cd ../spec
 fi
 
+mkdir -p .tmp
+
 if test "${filename}" -nt "./.cache/${target}"
 then
 rustc ${filename} -L "../ibis/.libs"
